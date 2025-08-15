@@ -1,36 +1,9 @@
-const CACHE_NAME = 'sisunic-v1';
+const CACHE_NAME = 'sisunic-v6';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/index.tsx',
-  '/App.tsx',
-  '/types.ts',
-  '/constants.ts',
-  '/utils/formatter.ts',
-  '/utils/reverseCalculations.ts',
-  '/components/ColorBandSelector.tsx',
-  '/components/SmdResistorView.tsx',
-  '/components/ElectrolyticCapacitorInfo.tsx',
-  '/components/CeramicCapacitorView.tsx',
-  '/components/CodeResultDisplay.tsx',
-  '/components/ResultResistorView.tsx',
-  '/components/InfoModal.tsx',
-  '/components/InfoContent.tsx',
-  '/components/PotentiometerView.tsx',
-  '/components/SensorInfoView.tsx',
-  '/components/ThermistorCalculator.tsx',
-  '/components/LdrSimulator.tsx',
-  '/components/CameraIdentifier.tsx',
-  '/components/IdentificationResultModal.tsx',
-  '/components/CameraErrorModal.tsx',
-  '/components/SkeletonLoader.tsx',
-  '/context/TranslationContext.tsx',
-  '/hooks/useTranslation.tsx',
-  '/locales/en.json',
-  '/locales/fa.json',
-  'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap',
-  'https://fonts.gstatic.com/s/vazirmatn/v11/Dxx78-e_8Y_r_ecS9z4h_JL2lVpO-D4a_g.woff2', // font pre-caching
+  '/manifest.json',
+  '/icon-512.png',
 ];
 
 self.addEventListener('install', (event) => {
@@ -44,15 +17,33 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET' || event.request.url.includes("generativelanguage.googleapis.com")) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
+      .then((cachedResponse) => {
+        const fetchPromise = fetch(event.request).then(
+          (networkResponse) => {
+            const cacheable = networkResponse.clone();
+             caches.open(CACHE_NAME).then((cache) => {
+                // We only cache basic responses to avoid caching errors from extensions or other sources
+                if (cacheable.type === 'basic') {
+                    cache.put(event.request, cacheable);
+                }
+            });
+            return networkResponse;
+          }
+        ).catch(err => {
+            console.error('Fetch failed; returning offline page instead.', err);
+             // If the network fails, and there's no cache, you might want to return a fallback page.
+             // For now, we just re-throw the error if there was no cached response.
+             if(!cachedResponse) throw err;
+        });
+
+        return cachedResponse || fetchPromise;
+      })
   );
 });
 
@@ -63,6 +54,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
