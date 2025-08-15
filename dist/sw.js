@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sisunic-v7';
+const CACHE_NAME = 'sisunic-v9';
 const urlsToCache = [
   '/',
   '/index.html',
