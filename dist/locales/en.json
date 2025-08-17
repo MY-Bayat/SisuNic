@@ -1,3 +1,4 @@
+
 {
     "app_subtitle": "Your Comprehensive Smart Lab Assistant",
     "app_description": "Electrical, Electronics, Power Electronics & Medical Equipment",
@@ -109,6 +110,7 @@
     "camera_control_flash_off": "Turn flash on",
     "camera_control_toggle_macro": "Toggle macro mode",
     "camera_control_macro": "Macro Mode",
+    "camera_control_switch_camera": "Switch Camera",
 
     "history_button": "History",
     "history_modal_title": "Identification History",

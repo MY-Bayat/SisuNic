@@ -1,3 +1,4 @@
+
 {
     "app_subtitle": "دستیار آزمایشگاه جامع هوشمند",
     "app_description": "برق، الکترونیک، الکترونیک قدرت و تجهیزات پزشکی",
@@ -109,6 +110,7 @@
     "camera_control_flash_off": "روشن کردن فلاش",
     "camera_control_toggle_macro": "تغییر حالت ماکرو",
     "camera_control_macro": "حالت ماکرو",
+    "camera_control_switch_camera": "تغییر دوربین",
 
     "history_button": "تاریخچه",
     "history_modal_title": "تاریخچه شناسایی‌ها",
